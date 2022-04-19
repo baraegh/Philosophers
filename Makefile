@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eel-ghan <eel-ghan@student.42.fr>          +#+  +:+       +#+         #
+#    By: barae <barae@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 23:11:23 by eel-ghan          #+#    #+#              #
-#    Updated: 2022/04/06 01:06:12 by eel-ghan         ###   ########.fr        #
+#    Updated: 2022/04/19 03:11:18 by barae            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = philo.c check.c functions.c utils.c
+SRCS = philo.c check_args.c utils00.c utils01.c
 
 OBJS = ${SRCS:.c=.o}
 
