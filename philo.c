@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:15:47 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/19 03:01:21 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/20 06:32:12 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,51 @@
 
 void	print_status(t_philo *philo, char *status)
 {
-
-	printf("%llu	%d	%s\n", (get_time() - philo->starting_time) / 1000, philo->index + 1, status);
+	pthread_mutex_lock(&philo->data->print);
+	printf("%ld	%d	%s\n",
+		(get_time() - philo->starting_time) / 1000,
+		philo->index + 1, status);
+	if (ft_strcmp(status, "died") != 0)
+		pthread_mutex_unlock(&philo->data->print);
 }
 
-void	eat(t_philo *philo)
+void	philo_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork[philo->index]);
 	print_status(philo, "has taken the left fork");
-	pthread_mutex_lock(&philo->fork[(philo->index + 1) % philo->data->nbr]);
+	pthread_mutex_lock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
 	print_status(philo, "has taken the right fork");
+	philo->is_eating = 1;
+	philo->last_meal_time = get_time();
 	print_status(philo, "is eating");
 	ft_usleep(philo->data->t_eat);
-	philo->last_meal_time = get_time();
+	philo->nbr_of_time_eat++;
+	// printf("%ld	thread: %d, last meal: %lu\n",
+	// 	(get_time() - philo->starting_time) / 1000,
+	// 	philo->index + 1,
+	// 	philo->last_meal_time); /////////////////////////////////////////////////
+	philo->is_eating = 0;
 	pthread_mutex_unlock(&philo->fork[philo->index]);
-	pthread_mutex_unlock(&philo->fork[(philo->index + 1) % philo->data->nbr]);
+	pthread_mutex_unlock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
 	print_status(philo, "is sleeping");
 	ft_usleep(philo->data->t_sleep);
-	if (!(philo->data->death))
-		print_status(philo, "is thinking");
+	print_status(philo, "is thinking");
 }
 
 void	*routine(void *arg)
 {
 	t_philo	*philo;
-	// t_data	*data;
+	t_data	*data;
 
 	philo = (t_philo *) arg;
-	// data = philo->data;
-	if (philo->index % 2)
-		ft_usleep(10);
-	while (1)
+	data = philo->data;
+	// if (philo->index % 2)
+	// 	ft_usleep(500);
+	while (!(data->death) &&
+		philo->nbr_of_time_eat != data->nbr_eat)
 	{
-		// if (!(data->death))
-		// 	break ;
-		eat(philo);
+		// printf("thread %d\n", philo->index + 1);
+		philo_state(philo);
 	}
 	return (NULL);
 }
@@ -58,21 +68,37 @@ void	philosophers(t_philo *philo)
 	int		i;
 
 	i = 0;
-	while (i < philo->data->nbr)
+	while (i < philo->data->philo_nbr)
 		pthread_mutex_init(&philo->fork[i++], NULL);
 	i = 0;
-	while (i < philo->data->nbr)
+	while (i < philo->data->philo_nbr)
 	{
 		if (pthread_create(&philo[i].thread, NULL, &routine, philo + i))
 		{
 			printf("Error: unable to create thread\n");
 			break ;
 		}
-		i ++;
+		i += 2;
+	}
+	ft_usleep(10);
+	i = 1;
+	while (i < philo->data->philo_nbr)
+	{
+		if (pthread_create(&philo[i].thread, NULL, &routine, philo + i))
+		{
+			printf("Error: unable to create thread\n");
+			break ;
+		}
+		i += 2;
 	}
 	checking_death(philo);
-	while (i < philo->data->nbr)
-		pthread_mutex_destroy(&philo->fork[i++]); 
+	// i = 0;
+	// while (i < philo->data->philo_nbr)
+	// 	pthread_join(philo[i++].thread, NULL);
+	i = 0;
+	while (i < philo->data->philo_nbr)
+		pthread_mutex_destroy(&philo->fork[i++]);
+	pthread_mutex_destroy(&philo->data->print);
 }
 
 int	main(int ac, char **av)
@@ -88,6 +114,7 @@ int	main(int ac, char **av)
 		// 	return
 		if (!init_data(ac, av, data))
 			return (0);
+		pthread_mutex_init(&data->print, NULL); //////////////////////////////////////
 		philosophers(data->philo);
 	}
 	else

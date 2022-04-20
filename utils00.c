@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils00.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/19 02:26:41 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/20 06:32:01 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
-
-uli	get_time(void)
-{
-	timeval	time;
-
-	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000000 + time.tv_usec);
-}
 
 int	init_data(int ac, char **av, t_data *data)
 {
@@ -35,7 +27,7 @@ int	init_data(int ac, char **av, t_data *data)
 	fork = malloc(sizeof(pthread_mutex_t) * philo_nbr);
 	// if (!fork)
 		//
-	data->nbr = philo_nbr;
+	data->philo_nbr = philo_nbr;
 	data->t_die = ft_atoi(av[2]) * 1000;
 	data->t_eat = ft_atoi(av[3]) * 1000;
 	data->t_sleep = ft_atoi(av[4]) * 1000;
@@ -48,6 +40,8 @@ int	init_data(int ac, char **av, t_data *data)
 	while (i < philo_nbr)
 	{
 		data->philo[i].index = i;
+		data->philo[i].nbr_of_time_eat = 0;
+		data->philo[i].is_eating = 0;
 		data->philo[i].starting_time = get_time();
 		data->philo[i].last_meal_time = get_time();
 		data->philo[i].fork = fork;
@@ -57,19 +51,18 @@ int	init_data(int ac, char **av, t_data *data)
 	return (1);
 }
 
-// ull	get_time_deff(timeval c_time, timeval p_time)
-// {
-// 	return ((c_time.tv_sec * 1000 + c_time.tv_usec / 1000)
-// 		- (p_time.tv_sec * 1000 + p_time.tv_usec / 1000));
-// }
-
-void	ft_usleep(uli time_to_sleep)
+int	is_all_ate(t_data *data)
 {
-	uli	c_time;
+	int	i;
 
-	c_time = get_time();
-	while ((get_time() - c_time) < time_to_sleep)
-		usleep(100);
+	i = 0;
+	while (i < data->philo_nbr)
+	{
+		if (data->philo[i].nbr_of_time_eat < data->nbr_eat)
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	checking_death(t_philo *philo)
@@ -78,18 +71,29 @@ void	checking_death(t_philo *philo)
 	int		i;
 
 	data = philo->data;
+	i = 0;
 	while (1)
 	{
-		i = 0;
-		while (i < data->nbr)
+		i %= data->philo_nbr;
+		uli time = get_time();
+		if (time - data->philo[i].last_meal_time >= data->t_die
+			&& !data->philo[i].is_eating)
 		{
-			if (get_time() - data->philo[i].last_meal_time > data->t_die)
-			{
-				data->death = 1;
-				print_status(data->philo + i, "died");
-				return ;
-			}
-			i++;
+			// printf("%ld	time: %ld last_meal: %lu deff: %ld time to die: %ld\n",
+			// 	(time - philo->starting_time) / 1000,
+			// 	time,
+			// 	data->philo[i].last_meal_time,
+			// 	time - data->philo[i].last_meal_time,
+			// 	data->t_die);
+			data->death = 1;
+			print_status(data->philo + i, "died");
+			return ;
 		}
+		if (data->nbr_eat != -1 && is_all_ate(data))
+		{
+			// pthread_mutex_lock(&philo->data->print);
+			return ;
+		}
+		i++;
 	}
 }
