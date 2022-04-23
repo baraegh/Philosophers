@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:11:26 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/20 05:19:14 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/20 06:48:37 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_philo
 {
 	pthread_t		thread;
 	int				index;
-	int				nbr_of_time_eat;
+	int				nbr_of_time_ate;
 	int				is_eating;
 	uli				starting_time;
 	uli				last_meal_time;

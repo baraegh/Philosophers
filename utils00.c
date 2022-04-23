@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/20 06:32:01 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/22 03:21:48 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	init_data(int ac, char **av, t_data *data)
 	while (i < philo_nbr)
 	{
 		data->philo[i].index = i;
-		data->philo[i].nbr_of_time_eat = 0;
+		data->philo[i].nbr_of_time_ate = 0;
 		data->philo[i].is_eating = 0;
 		data->philo[i].starting_time = get_time();
 		data->philo[i].last_meal_time = get_time();
@@ -58,7 +58,7 @@ int	is_all_ate(t_data *data)
 	i = 0;
 	while (i < data->philo_nbr)
 	{
-		if (data->philo[i].nbr_of_time_eat < data->nbr_eat)
+		if (data->philo[i].nbr_of_time_ate < data->nbr_eat)
 			return (0);
 		i++;
 	}
@@ -79,19 +79,13 @@ void	checking_death(t_philo *philo)
 		if (time - data->philo[i].last_meal_time >= data->t_die
 			&& !data->philo[i].is_eating)
 		{
-			// printf("%ld	time: %ld last_meal: %lu deff: %ld time to die: %ld\n",
-			// 	(time - philo->starting_time) / 1000,
-			// 	time,
-			// 	data->philo[i].last_meal_time,
-			// 	time - data->philo[i].last_meal_time,
-			// 	data->t_die);
 			data->death = 1;
 			print_status(data->philo + i, "died");
 			return ;
 		}
 		if (data->nbr_eat != -1 && is_all_ate(data))
 		{
-			// pthread_mutex_lock(&philo->data->print);
+			pthread_mutex_lock(&philo->data->print);
 			return ;
 		}
 		i++;

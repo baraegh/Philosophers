@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:15:47 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/20 06:32:12 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/23 01:17:35 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,7 @@ void	philo_state(t_philo *philo)
 	philo->last_meal_time = get_time();
 	print_status(philo, "is eating");
 	ft_usleep(philo->data->t_eat);
-	philo->nbr_of_time_eat++;
-	// printf("%ld	thread: %d, last meal: %lu\n",
-	// 	(get_time() - philo->starting_time) / 1000,
-	// 	philo->index + 1,
-	// 	philo->last_meal_time); /////////////////////////////////////////////////
+	philo->nbr_of_time_ate++;
 	philo->is_eating = 0;
 	pthread_mutex_unlock(&philo->fork[philo->index]);
 	pthread_mutex_unlock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
@@ -52,10 +48,8 @@ void	*routine(void *arg)
 
 	philo = (t_philo *) arg;
 	data = philo->data;
-	// if (philo->index % 2)
-	// 	ft_usleep(500);
 	while (!(data->death) &&
-		philo->nbr_of_time_eat != data->nbr_eat)
+		philo->nbr_of_time_ate != data->nbr_eat)
 	{
 		// printf("thread %d\n", philo->index + 1);
 		philo_state(philo);
@@ -80,7 +74,7 @@ void	philosophers(t_philo *philo)
 		}
 		i += 2;
 	}
-	ft_usleep(10);
+	ft_usleep(100);
 	i = 1;
 	while (i < philo->data->philo_nbr)
 	{
@@ -92,9 +86,6 @@ void	philosophers(t_philo *philo)
 		i += 2;
 	}
 	checking_death(philo);
-	// i = 0;
-	// while (i < philo->data->philo_nbr)
-	// 	pthread_join(philo[i++].thread, NULL);
 	i = 0;
 	while (i < philo->data->philo_nbr)
 		pthread_mutex_destroy(&philo->fork[i++]);
