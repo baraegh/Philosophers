@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 00:28:23 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/22 03:42:52 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/23 01:37:51 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	is_number(char *str)
 	return (1);
 }
 
-int	check_args(char **av, int ac)
+int	 check_args(char **av, int ac)
 {
 	int	i;
 

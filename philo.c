@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:15:47 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/23 01:17:35 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/23 02:20:31 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	print_status(t_philo *philo, char *status)
 void	philo_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork[philo->index]);
-	print_status(philo, "has taken the left fork");
+	print_status(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
-	print_status(philo, "has taken the right fork");
+	print_status(philo, "has taken a fork");
 	philo->is_eating = 1;
 	philo->last_meal_time = get_time();
 	print_status(philo, "is eating");
@@ -50,41 +50,19 @@ void	*routine(void *arg)
 	data = philo->data;
 	while (!(data->death) &&
 		philo->nbr_of_time_ate != data->nbr_eat)
-	{
-		// printf("thread %d\n", philo->index + 1);
 		philo_state(philo);
-	}
 	return (NULL);
 }
 
 void	philosophers(t_philo *philo)
 {
-	int		i;
+	int	i;
 
-	i = 0;
-	while (i < philo->data->philo_nbr)
-		pthread_mutex_init(&philo->fork[i++], NULL);
-	i = 0;
-	while (i < philo->data->philo_nbr)
-	{
-		if (pthread_create(&philo[i].thread, NULL, &routine, philo + i))
-		{
-			printf("Error: unable to create thread\n");
-			break ;
-		}
-		i += 2;
-	}
+	if (!create_threads(philo, 0, &routine))
+		return ;
 	ft_usleep(100);
-	i = 1;
-	while (i < philo->data->philo_nbr)
-	{
-		if (pthread_create(&philo[i].thread, NULL, &routine, philo + i))
-		{
-			printf("Error: unable to create thread\n");
-			break ;
-		}
-		i += 2;
-	}
+	if (!create_threads(philo, 1, &routine))
+		return ;
 	checking_death(philo);
 	i = 0;
 	while (i < philo->data->philo_nbr)
@@ -101,14 +79,17 @@ int	main(int ac, char **av)
 		if (!check_args(av, ac))
 			return (0);
 		data = malloc(sizeof(t_data));
-		// if (!data)
-		// 	return
+		if (!data)
+			return (0);
 		if (!init_data(ac, av, data))
 			return (0);
-		pthread_mutex_init(&data->print, NULL); //////////////////////////////////////
+		init_mutex(data);
 		philosophers(data->philo);
 	}
 	else
 		printf("Error: bad arguments number\n");
+	free(data->philo->fork);
+	free(data->philo);
+	free(data);
 	return (0);
 }

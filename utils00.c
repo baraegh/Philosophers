@@ -6,38 +6,22 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/22 03:21:48 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/23 02:15:44 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-int	init_data(int ac, char **av, t_data *data)
+int	init_philos(t_data *data)
 {
-	int				i;
-	int				philo_nbr;
 	pthread_mutex_t	*fork;
+	int				i;
 
-	philo_nbr = ft_atoi(av[1]);
-	// if (philo_nbr <= 0)
-	// 	return
-	data->philo = malloc(sizeof(t_philo) * philo_nbr);
-	// if (!ph)
-		//
-	fork = malloc(sizeof(pthread_mutex_t) * philo_nbr);
-	// if (!fork)
-		//
-	data->philo_nbr = philo_nbr;
-	data->t_die = ft_atoi(av[2]) * 1000;
-	data->t_eat = ft_atoi(av[3]) * 1000;
-	data->t_sleep = ft_atoi(av[4]) * 1000;
-	data->death = 0;
-	if (ac == 6)
-		data->nbr_eat = ft_atoi(av[5]);
-	else
-		data->nbr_eat = -1;
+	fork = malloc(sizeof(pthread_mutex_t) * data->philo_nbr);
+	if (!fork)
+		return (0);
 	i = 0;
-	while (i < philo_nbr)
+	while (i < data->philo_nbr)
 	{
 		data->philo[i].index = i;
 		data->philo[i].nbr_of_time_ate = 0;
@@ -48,6 +32,27 @@ int	init_data(int ac, char **av, t_data *data)
 		data->philo[i].data = data;
 		i++;
 	}
+	return (1);
+}
+
+int	init_data(int ac, char **av, t_data *data)
+{
+	int	philo_nbr;
+
+	philo_nbr = ft_atoi(av[1]);
+	data->philo = malloc(sizeof(t_philo) * philo_nbr);
+	if (!data->philo)
+		return (0);
+	data->philo_nbr = philo_nbr;
+	data->t_die = ft_atoi(av[2]) * 1000;
+	data->t_eat = ft_atoi(av[3]) * 1000;
+	data->t_sleep = ft_atoi(av[4]) * 1000;
+	data->death = 0;
+	if (ac == 6)
+		data->nbr_eat = ft_atoi(av[5]);
+	else
+		data->nbr_eat = -1;
+	init_philos(data);
 	return (1);
 }
 
@@ -75,8 +80,7 @@ void	checking_death(t_philo *philo)
 	while (1)
 	{
 		i %= data->philo_nbr;
-		uli time = get_time();
-		if (time - data->philo[i].last_meal_time >= data->t_die
+		if (get_time() - data->philo[i].last_meal_time >= data->t_die
 			&& !data->philo[i].is_eating)
 		{
 			data->death = 1;
@@ -90,4 +94,14 @@ void	checking_death(t_philo *philo)
 		}
 		i++;
 	}
+}
+
+void	init_mutex(t_data *data)
+{
+	int	i;
+
+	pthread_mutex_init(&data->print, NULL);
+	i = 0;
+	while (i < data->philo_nbr)
+		pthread_mutex_init(&data->philo->fork[i++], NULL);
 }
