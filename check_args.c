@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check.c                                            :+:      :+:    :+:   */
+/*   check_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 00:28:23 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/18 02:27:27 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/22 03:42:52 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int	is_number(char *str)
 	{
 		if (str[i] < '0' || str[i] > '9')
 		{
-			if (str[i] == '+' && i == 0)
+			if ((str[i] == '+' || str[i] == '-')
+				&& i == 0)
 			{
 				i++;
 				continue ;
@@ -46,12 +47,9 @@ int	check_args(char **av, int ac)
 	i = 1;
 	while (i < ac)
 	{
-		if (!is_number(av[i]))
-		{
-			print_return(av[i],
-				"is not a number or it's a negative number");
-			break ;
-		}
+		if (!is_number(av[i])
+			|| ft_atoi(av[i]) <= 0)
+			return(print_return("wrong input", av[i]));
 		i++;
 	}
 	return (1);
