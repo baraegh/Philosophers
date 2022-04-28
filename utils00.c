@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/25 02:51:59 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/28 04:42:24 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	init_data(int ac, char **av, t_data *data)
 		data->nbr_eat = -1;
 	if (!init_philos(data))
 		return (0);
-	retturn (1);
+	return (1);
 }
 
 int	is_all_ate(t_data *data)
