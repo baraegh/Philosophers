@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 00:42:45 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/23 02:18:45 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/28 23:17:41 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 l_int	get_time(void)
 {
-	timeval	time;
+	time_val	time;
 
 	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000000 + time.tv_usec);
@@ -22,10 +22,10 @@ l_int	get_time(void)
 
 void	ft_usleep(l_int time_to_sleep)
 {
-	l_int	c_time;
+	l_int	s_time;
 
-	c_time = get_time();
-	while ((get_time() - c_time) < time_to_sleep)
+	s_time = get_time();
+	while ((get_time() - s_time) < time_to_sleep)
 		usleep(200);
 }
 

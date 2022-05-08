@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:15:47 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/25 02:50:38 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/28 23:45:00 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	*routine(void *arg)
 
 	philo = (t_philo *) arg;
 	data = philo->data;
-	while (!(data->death) &&
+	while (!data->death &&
 		philo->nbr_of_time_ate != data->nbr_eat)
 		philo_state(philo);
 	return (NULL);

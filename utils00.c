@@ -6,7 +6,7 @@
 /*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/28 04:42:24 by barae            ###   ########.fr       */
+/*   Updated: 2022/04/28 23:48:36 by barae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,10 @@ int	init_philos(t_data *data)
 
 int	init_data(int ac, char **av, t_data *data)
 {
-	int	philo_nbr;
-
-	philo_nbr = ft_atoi(av[1]);
-	data->philo = malloc(sizeof(t_philo) * philo_nbr);
+	data->philo_nbr = ft_atoi(av[1]);
+	data->philo = malloc(sizeof(t_philo) * data->philo_nbr);
 	if (!data->philo)
 		return (0);
-	data->philo_nbr = philo_nbr;
 	data->t_die = ft_atoi(av[2]) * 1000;
 	data->t_eat = ft_atoi(av[3]) * 1000;
 	data->t_sleep = ft_atoi(av[4]) * 1000;
@@ -81,16 +78,17 @@ void	checking_death(t_philo *philo)
 	while (1)
 	{
 		i %= data->philo_nbr;
-		if (get_time() - data->philo[i].last_meal_time >= data->t_die
-			&& !data->philo[i].is_eating)
+		if (get_time() - philo[i].last_meal_time >= data->t_die 
+			&& !philo[i].is_eating)
 		{
+			printf("deff: %ld, nbr: %d\n", get_time() - philo[i].last_meal_time, i + 1);
 			data->death = 1;
 			print_status(data->philo + i, "died");
 			return ;
 		}
-		if (data->nbr_eat != -1 && is_all_ate(data))
+		else if (data->nbr_eat != -1 && is_all_ate(data))
 		{
-			pthread_mutex_lock(&philo->data->print);
+			pthread_mutex_lock(&data->print);
 			return ;
 		}
 		i++;
