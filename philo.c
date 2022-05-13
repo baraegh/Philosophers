@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
+/*   By: eel-ghan <eel-ghan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 23:15:47 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/28 23:45:00 by barae            ###   ########.fr       */
+/*   Updated: 2022/05/09 13:21:47 by eel-ghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	philo_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork[philo->index]);
 	print_status(philo, "has taken a fork");
-	pthread_mutex_lock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
+	pthread_mutex_lock(&philo->fork[(philo->index + 1)
+		% philo->data->philo_nbr]);
 	print_status(philo, "has taken a fork");
 	philo->is_eating = 1;
 	philo->last_meal_time = get_time();
@@ -36,7 +37,8 @@ void	philo_state(t_philo *philo)
 	philo->is_eating = 0;
 	print_status(philo, "is sleeping");
 	pthread_mutex_unlock(&philo->fork[philo->index]);
-	pthread_mutex_unlock(&philo->fork[(philo->index + 1) % philo->data->philo_nbr]);
+	pthread_mutex_unlock(&philo->fork[(philo->index + 1)
+		% philo->data->philo_nbr]);
 	ft_usleep(philo->data->t_sleep);
 	print_status(philo, "is thinking");
 }
@@ -48,8 +50,8 @@ void	*routine(void *arg)
 
 	philo = (t_philo *) arg;
 	data = philo->data;
-	while (!data->death &&
-		philo->nbr_of_time_ate != data->nbr_eat)
+	while (!data->death
+		&& philo->nbr_of_time_ate != data->nbr_eat)
 		philo_state(philo);
 	return (NULL);
 }
@@ -85,11 +87,11 @@ int	main(int ac, char **av)
 			return (0);
 		init_mutex(data);
 		philosophers(data->philo);
+		free(data->philo->fork);
+		free(data->philo);
+		free(data);
 	}
 	else
 		printf("Error: bad arguments number\n");
-	free(data->philo->fork);
-	free(data->philo);
-	free(data);
 	return (0);
 }

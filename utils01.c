@@ -3,26 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   utils01.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
+/*   By: eel-ghan <eel-ghan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 00:42:45 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/28 23:17:41 by barae            ###   ########.fr       */
+/*   Updated: 2022/05/09 13:23:37 by eel-ghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-l_int	get_time(void)
+t_l_int	get_time(void)
 {
-	time_val	time;
+	t_time_val	time;
 
 	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000000 + time.tv_usec);
 }
 
-void	ft_usleep(l_int time_to_sleep)
+void	ft_usleep(t_l_int time_to_sleep)
 {
-	l_int	s_time;
+	t_l_int	s_time;
 
 	s_time = get_time();
 	while ((get_time() - s_time) < time_to_sleep)
@@ -40,7 +40,7 @@ int	ft_atoi(const char *str)
 	i = 0;
 	sign = 1;
 	while (*(str + i) == ' ' || *(str + i) == '\t' || *(str + i) == '\r'
-		|| *(str + i) == '\n' || *(str + i) == '\v'|| *(str + i) == '\f')
+		|| *(str + i) == '\n' || *(str + i) == '\v' || *(str + i) == '\f')
 		i++;
 	if (*(str + i) == '-' || *(str + i) == '+')
 	{
@@ -68,7 +68,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 }
 
 int	create_threads(t_philo *philo, int i,
- void *(* routine)(void *))
+	void *(*routine)(void *))
 {
 	while (i < philo->data->philo_nbr)
 	{

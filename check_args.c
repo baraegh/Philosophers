@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   check_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
+/*   By: eel-ghan <eel-ghan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 00:28:23 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/23 01:37:51 by barae            ###   ########.fr       */
+/*   Updated: 2022/05/09 13:14:10 by eel-ghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-int	print_return(char *s1, char* s2)
+int	print_return(char *s1, char *s2)
 {
 	printf("%s: %s\n", s1, s2);
 	return (0);
@@ -40,7 +40,7 @@ int	is_number(char *str)
 	return (1);
 }
 
-int	 check_args(char **av, int ac)
+int	check_args(char **av, int ac)
 {
 	int	i;
 
@@ -49,7 +49,7 @@ int	 check_args(char **av, int ac)
 	{
 		if (!is_number(av[i])
 			|| ft_atoi(av[i]) <= 0)
-			return(print_return("wrong input", av[i]));
+			return (print_return("wrong input", av[i]));
 		i++;
 	}
 	return (1);

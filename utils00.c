@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils00.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barae <barae@student.42.fr>                +#+  +:+       +#+        */
+/*   By: eel-ghan <eel-ghan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 01:08:38 by eel-ghan          #+#    #+#             */
-/*   Updated: 2022/04/28 23:48:36 by barae            ###   ########.fr       */
+/*   Updated: 2022/05/09 13:22:26 by eel-ghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,9 @@ void	checking_death(t_philo *philo)
 	while (1)
 	{
 		i %= data->philo_nbr;
-		if (get_time() - philo[i].last_meal_time >= data->t_die 
+		if (get_time() - philo[i].last_meal_time >= data->t_die
 			&& !philo[i].is_eating)
 		{
-			printf("deff: %ld, nbr: %d\n", get_time() - philo[i].last_meal_time, i + 1);
 			data->death = 1;
 			print_status(data->philo + i, "died");
 			return ;
